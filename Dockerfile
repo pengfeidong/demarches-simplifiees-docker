@@ -12,10 +12,10 @@ RUN curl -fsSL https://github.com/rbenv/rbenv-installer/raw/HEAD/bin/rbenv-docto
 # Ruby
 RUN apt-get install -y gcc g++ make libssl-dev libreadline-dev zlib1g-dev && apt-get autoremove && apt-get clean
 RUN apt-get install -y bzip2 && apt-get autoremove && apt-get clean
-RUN rbenv install 2.7.1
+RUN rbenv install 3.1.2
 
 # Yarn
-RUN curl -sL https://deb.nodesource.com/setup_12.x | sudo bash -
+RUN curl -sL https://deb.nodesource.com/setup_16.x | sudo bash -
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
 RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
 RUN apt-get update && apt-get upgrade -y && apt-get install -y yarn && apt-get autoremove && apt-get clean
@@ -25,9 +25,15 @@ RUN curl -fsSL https://github.com/DarthSim/overmind/releases/download/v2.1.0/ove
 
 # Chromedriver
 RUN curl -fsSL https://chromedriver.storage.googleapis.com/91.0.4472.19/chromedriver_linux64.zip | gunzip > /usr/bin/chromedriver && chmod +x /usr/bin/chromedriver
+
+# Chrome
 RUN sh -c 'echo "deb [arch=amd64] https://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list'
 RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
-RUN apt-get update && apt-get install -y google-chrome-stable
+RUN apt-get update && apt-get autoremove && apt-get clean
+RUN apt-get install -y google-chrome-stable && apt-get autoremove && apt-get clean
+
+# icu required (brew install icu4c or apt-get install libicu-dev) for gem charlock_holmes
+RUN apt-get install -y libicu-dev && apt-get autoremove && apt-get clean
 
 # Postgres
 ARG DEBIAN_FRONTEND=noninteractive
